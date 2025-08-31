@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportsHub - E-commerce & Tickets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c0c6e5 0%, #be88f4 100%);
+            color: #827979;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(90, 89, 89, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #af7fde);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .cart-icon, .security-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .cart-icon:hover, .security-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            margin: 2rem 0;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+            padding: 0.5rem;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Event Cards */
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+
+        .event-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .event-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .event-date {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .event-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+        }
+
+        /* Security Features */
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .security-feature {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .security-feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .security-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 20px;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 5px solid;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #155724;
+            border-color: #28a745;
+        }
+
+        .alert-error {
+            background: rgba(220, 53, 69, 0.1);
+            color: #721c24;
+            border-color: #dc3545;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-nav {
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">SportsHub</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showTab('merchandise')">Merchandise</a></li>
+                <li><a href="#" onclick="showTab('tickets')">Tickets</a></li>
+                <li><a href="#" onclick="showTab('security')">Security</a></li>
+                <li>
+                    <div class="cart-icon" onclick="openModal('cartModal')">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="security-icon" onclick="openModal('loginModal')">
+                        🔒
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content container">
+        <div class="section">
+            <h1 class="section-title">Welcome to SportsHub</h1>
+            
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="showTab('merchandise')">Merchandise</button>
+                <button class="tab-btn" onclick="showTab('tickets')">Event Tickets</button>
+                <button class="tab-btn" onclick="showTab('security')">Security Features</button>
+            </div>
+
+            <!-- Merchandise Tab -->
+            <div id="merchandise" class="tab-content active">
+                <h2>Featured Merchandise</h2>
+                <div class="product-grid" id="productGrid">
+                    <!-- Products will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Tickets Tab -->
+            <div id="tickets" class="tab-content">
+                <h2>Upcoming Events</h2>
+                <div id="eventsList">
+                    <!-- Events will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div id="security" class="tab-content">
+                <h2>Security & Trust Features</h2>
+                <div class="security-grid">
+                    <div class="security-feature">
+                        <div class="security-icon">🔐</div>
+                        <h3>SSL Encryption</h3>
+                        <p>All transactions are secured with 256-bit SSL encryption to protect your personal and payment information.</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-icon">🛡️</div>
+                        <h3>Fraud Protection</h3>
+                        <p>Advanced fraud detection systems monitor all transactions for suspicious activity and unauthorized access.</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-icon">✅</div>
+                        <h3>Verified Tickets</h3>
+                        <p>All tickets are blockchain-verified to prevent counterfeiting and ensure authenticity.</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-icon">🔒</div>
+                        <h3>Secure Payments</h3>
+                        <p>Multiple secure payment options including encrypted credit card processing and digital wallets.</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-icon">📱</div>
+                        <h3>Two-Factor Auth</h3>
+                        <p>Enhanced account security with SMS and app-based two-factor authentication options.</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-icon">🔄</div>
+                        <h3>Money Back Guarantee</h3>
+                        <p>100% money-back guarantee for cancelled events and full refund protection for verified issues.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('cartModal')">&times;</span>
+            <h2>Shopping Cart</h2>
+            <div id="cartItems">
+                <p>Your cart is empty</p>
+            </div>
+            <div id="cartTotal" style="text-align: right; margin-top: 1rem; font-size: 1.2rem; font-weight: bold;"></div>
+            <button class="btn" onclick="checkout()" style="margin-top: 1rem;">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Secure Login</h2>
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn">Login Securely</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ticket Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bookingModal')">&times;</span>
+            <h2>Book Tickets</h2>
+            <form onsubmit="bookTicket(event)">
+                <div class="form-group">
+                    <label>Number of Tickets:</label>
+                    <select id="ticketQuantity">
+                        <option value="1">1 Ticket</option>
+                        <option value="2">2 Tickets</option>
+                        <option value="3">3 Tickets</option>
+                        <option value="4">4 Tickets</option>
+                        <option value="5">5 Tickets</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ticket Type:</label>
+                    <select id="ticketType">
+                        <option value="general">General Admission - $50</option>
+                        <option value="vip">VIP - $100</option>
+                        <option value="premium">Premium - $150</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Full Name:</label>
+                    <input type="text" id="buyerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="buyerEmail" required>
+                </div>
+                <button type="submit" class="btn">Book Secure Tickets</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let cart = [];
+        let currentEvent = null;
+        
+        // Sample Products Data
+        const products = [
+            { id: 1, name: "Concert T-Shirt", price: 29.99, image: "👕 Concert Tee" },
+            { id: 2, name: "Event Hoodie", price: 49.99, image: "🧥 Hoodie" },
+            { id: 3, name: "Limited Edition Poster", price: 19.99, image: "🖼️ Poster" },
+            { id: 4, name: "Artist Mug", price: 14.99, image: "☕ Mug" },
+            { id: 5, name: "Event Badge Set", price: 12.99, image: "🏷️ Badge Set" },
+            { id: 6, name: "Vinyl Record", price: 34.99, image: "💿 Vinyl" }
+        ];
+
+        // Sample Events Data
+        const events = [
+            {
+                id: 1,
+                title: "Rock Concert 2025",
+                date: "2025-10-15",
+                time: "19:00",
+                venue: "Madison Square Garden",
+                city: "New York",
+                price: 75
+            },
+            {
+                id: 2,
+                title: "Jazz Festival",
+                date: "2025-11-20",
+                time: "18:00",
+                venue: "Hollywood Bowl",
+                city: "Los Angeles",
+                price: 65
+            },
+            {
+                id: 3,
+                title: "Electronic Music Night",
+                date: "2025-12-05",
+                time: "21:00",
+                venue: "Red Rocks",
+                city: "Denver",
+                price: 85
+            }
+        ];
+
+        // Initialize the application
+        function init() {
+            loadProducts();
+            loadEvents();
+            updateCartCount();
+        }
+
+        // Load products
+        function loadProducts() {
+            const productGrid = document.getElementById('productGrid');
+            productGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">${product.image}</div>
+                    <div class="product-title">${product.name}</div>
+                    <div class="product-price">$${product.price}</div>
+                    <button class="btn" onclick="addToCart(${product.id})">Add to Cart</button>
+                `;
+                productGrid.appendChild(productCard);
+            });
+        }
+
+        // Load events
+        function loadEvents() {
+            const eventsList = document.getElementById('eventsList');
+            eventsList.innerHTML = '';
+            
+            events.forEach(event => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                eventCard.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-title">${event.title}</div>
+                        <div class="event-date">${formatDate(event.date)}</div>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-item">📍 ${event.venue}</div>
+                        <div class="detail-item">🏙️ ${event.city}</div>
+                        <div class="detail-item">⏰ ${event.time}</div>
+                        <div class="detail-item">💰 From $${event.price}</div>
+                    </div>
+                    <button class="btn" onclick="openBooking(${event.id})">Book Tickets</button>
+                `;
+                eventsList.appendChild(eventCard);
+            });
+        }
+
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tab buttons
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab button
+            event.target.classList.add('active');
+        }
+
+        // Add to cart functionality
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            updateCartCount();
+            showAlert('Product added to cart!', 'success');
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cartCount');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
+
+        // Modal functionality
+        function openModal(modalId) {
+            if (modalId === 'cartModal') {
+                updateCartDisplay();
+            }
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Update cart display
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p>Your cart is empty</p>';
+                cartTotal.innerHTML = '';
+                return;
+            }
+            
+            let itemsHTML = '';
+            let total = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                itemsHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee;">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            $${item.price} x ${item.quantity}
+                        </div>
+                        <div>
+                            <strong>$${itemTotal.toFixed(2)}</strong>
+                            <button onclick="removeFromCart(${item.id})" style="margin-left: 1rem; background: #ff4757; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 5px; cursor: pointer;">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            cartItems.innerHTML = itemsHTML;
+            cartTotal.innerHTML = `Total: $${total.toFixed(2)}`;
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartCount();
+            updateCartDisplay();
+        }
+
+        // Checkout functionality
+        function checkout() {
+            if (cart.length === 0) {
+                showAlert('Your cart is empty!', 'error');
+                return;
+            }
+            
+            // Simulate secure checkout process
+            showAlert('Redirecting to secure checkout...', 'success');
+            setTimeout(() => {
+                cart = [];
+                updateCartCount();
+                closeModal('cartModal');
+                showAlert('Order placed successfully! Confirmation sent to your email.', 'success');
+            }, 2000);
+        }
+
+        // Open booking modal
+        function openBooking(eventId) {
+            currentEvent = events.find(e => e.id === eventId);
+            openModal('bookingModal');
+        }
+
+        // Book ticket functionality
+        function bookTicket(event) {
+            event.preventDefault();
+            
+            const quantity = document.getElementById('ticketQuantity').value;
+            const ticketType = document.getElementById('ticketType').value;
+            const name = document.getElementById('buyerName').value;
+            const email = document.getElementById('buyerEmail').value;
+            
+            // Simulate secure booking process
+            showAlert('Processing secure ticket booking...', 'success');
+            
+            setTimeout(() => {
+                closeModal('bookingModal');
+                showAlert(`Tickets booked successfully for ${name}! Confirmation sent to ${email}. Your tickets are blockchain-verified.`, 'success');
+                
+                // Reset form
+                document.getElementById('buyerName').value = '';
+                document.getElementById('buyerEmail').value = '';
+            }, 2000);
+        }
+
+        // Login functionality
+        function login(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Simulate secure login process
+            showAlert('Authenticating with secure protocols...', 'success');
+            
+            setTimeout(() => {
+                closeModal('loginModal');
+                showAlert('Login successful! Your session is secured with end-to-end encryption.', 'success');
+                
+                // Reset form
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+            }, 1500);
+        }
+
+        // Show alert messages
+        function showAlert(message, type) {
+            const existingAlert = document.querySelector('.alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            document.querySelector('.main-content').insertBefore(alert, document.querySelector('.section'));
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Utility function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display =
